@@ -25,24 +25,9 @@ app.use(express.static('public'));
 // 3rd party middleware package
 app.use(morgan('dev'));
 
+// routes
 app.get('/', (req, res) => {
-    const blogs = [{
-            title: 'Yoshi find eggs',
-            snippet: 'Occaecat excepteur qui non incididunt proident cupidatat commodo.'
-        },
-        {
-            title: 'Mario find stars',
-            snippet: 'Occaecat excepteur qui non incididunt proident cupidatat commodo.'
-        },
-        {
-            title: 'How to defeat bower',
-            snippet: 'Occaecat excepteur qui non incididunt proident cupidatat commodo.'
-        },
-    ]
-    res.render('index', {
-        title: 'Home',
-        blogs
-    });
+    res.redirect('/blogs');
 });
 
 
@@ -52,48 +37,23 @@ app.get('/about', (req, res) => {
     });
 });
 
+
+// blog routes
+app.get('/blogs', (req, res) => {
+    Blog.find().sort({ createdAt: -1 })
+        .then((result) => {
+            res.render('index', {
+                title: 'All Blogs',
+                blogs: result
+            });
+        })
+});
+
 app.get('/blogs/create', (req, res) => {
     res.render('create', {
         title: 'Create Blog'
     });
 });
-
-app.get('/add-blog', (req, res) => {
-    const blog = new Blog({
-        title: 'How to defeat bower',
-        snippet: 'Occaecat excepteur qui non incididunt proident cupidatat commodo.',
-        body: 'Quis commodo sunt cillum sit incididunt qui. Quis exercitation id est amet sint sunt. Incididunt anim anim minim cillum ipsum Lorem consectetur dolore.Irure ullamco ad qui nisi ut fugiat non quis veniam pariatur est do pariatur.Et velit magna amet tempor esse laborum reprehenderit velit dolor aute officia excepteur voluptate nulla.Magna cillum irure minim eu minim.'
-    });
-
-    blog.save()
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-});
-
-app.get('/all-blogs', (req, res) => {
-    Blog.find()
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-});
-
-app.get('/single-blog', (req, res) => {
-    Blog.findById('5f47d7f34206d826bf2ab0fe')
-    .then((result) => {
-        res.send(result)
-    })
-    .catch((err) => {
-        console.log(err);
-    })
-})
-
 
 // 404 page
 app.use((req, res) => {
