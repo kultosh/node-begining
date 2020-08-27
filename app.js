@@ -3,6 +3,8 @@ const morgan = require('morgan');
 // express app
 const app = express();
 
+const dbURI = 'mongodb+srv://kultosh:D4s7SXLLbXXix6u@nodebegining.7hs8n.mongodb.net/node-fresh?retryWrites=true&w=majority';
+
 // register view engine
 app.set('view engine', 'ejs');
 
