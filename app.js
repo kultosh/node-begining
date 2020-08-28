@@ -11,7 +11,7 @@ mongoose.connect(dbURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
-    .then((result) => app.listen(3000))
+    .then((result) => app.listen(8000))
     .catch((err) => console.log(err));
 
 // register view engine
@@ -21,6 +21,9 @@ app.set('view engine', 'ejs');
 
 // middleware and static files
 app.use(express.static('public'));
+app.use(express.urlencoded({
+    extended: true
+}));
 
 // 3rd party middleware package
 app.use(morgan('dev'));
@@ -40,7 +43,9 @@ app.get('/about', (req, res) => {
 
 // blog routes
 app.get('/blogs', (req, res) => {
-    Blog.find().sort({ createdAt: -1 })
+    Blog.find().sort({
+            createdAt: -1
+        })
         .then((result) => {
             res.render('index', {
                 title: 'All Blogs',
@@ -53,6 +58,18 @@ app.get('/blogs/create', (req, res) => {
     res.render('create', {
         title: 'Create Blog'
     });
+});
+
+app.post('/blogs', (req, res) => {
+    const blog = new Blog(req.body);
+
+    blog.save()
+    .then((result) => {
+        res.redirect('/blogs');
+    })
+    .catch((err) => {
+        console.log(err);
+    })
 });
 
 // 404 page
