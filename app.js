@@ -72,6 +72,17 @@ app.post('/blogs', (req, res) => {
         })
 });
 
+app.delete('/blogs/delete/:id', (req, res) => {
+    const id = req.params.id;
+    Blog.findByIdAndDelete(id)
+        .then((result) => {
+            res.redirect('/blogs');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+});
+
 app.get('/blogs/:id', (req, res) => {
     const id = req.params.id;
     Blog.findById(id)
@@ -85,6 +96,20 @@ app.get('/blogs/:id', (req, res) => {
             console.log(err);
         })
 });
+
+app.delete('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+
+    Blog.findByIdAndDelete(id)
+    .then(result => {
+        res.json({redirect: '/blogs'})
+    })
+    .catch(err => {
+        console.log(err);
+    })
+})
+
+
 
 // 404 page
 app.use((req, res) => {
